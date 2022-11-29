@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "I: Create /etc/resolv.conf"
+echo "I: Install fallback DNS to 8.8.8.8"
+echo "nameserver 8.8.8.8" > binary/etc/resolv.conf
