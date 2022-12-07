@@ -65,6 +65,11 @@ sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
 
+echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian buster main" | sudo tee -a /etc/apt/sources.list
+echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian carp-rk356x main" | sudo tee -a /etc/apt/sources.list
+
+curl https://Embedfire.github.io/keyfile | sudo apt-key add -
+
 apt-get update
 apt-get upgrade -y
 
@@ -74,7 +79,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #--------------- lubancat --------------
-\${APT_INSTALL} toilet
+\${APT_INSTALL} toilet fire-config
 
 passwd root <<IEOF
 root
@@ -93,10 +98,7 @@ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # allow root login
 sed -i '/pam_securetty.so/s/^/# /g' /etc/pam.d/login
 
-echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian buster main" | sudo tee -a /etc/apt/sources.list
-echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian carp-rk356x main" | sudo tee -a /etc/apt/sources.list
-
-curl https://Embedfire.github.io/keyfile | sudo apt-key add -
+\${APT_INSTALL} ttf-wqy-zenhei xfonts-intl-chinese
 
 #---------------power management --------------
 \${APT_INSTALL} pm-utils triggerhappy

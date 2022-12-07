@@ -67,6 +67,11 @@ sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
 
+echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian buster main" | sudo tee -a /etc/apt/sources.list
+echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian carp-rk356x main" | sudo tee -a /etc/apt/sources.list
+
+curl https://Embedfire.github.io/keyfile | sudo apt-key add -
+
 apt-get update
 apt-get upgrade -y
 
@@ -76,7 +81,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #--------------- lubancat --------------
-\${APT_INSTALL} toilet mpv
+\${APT_INSTALL} toilet mpv fire-config
 
 passwd root <<IEOF
 root
@@ -99,11 +104,6 @@ sed -i '/pam_securetty.so/s/^/# /g' /etc/pam.d/login
 chown -hR cat:cat /home/cat/.config
 \${APT_INSTALL} numix-gtk-theme numix-icon-theme-circle
 ln -sf /etc/alternatives/lubancat-wallpaper.png /etc/alternatives/desktop-background
-
-echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian buster main" | sudo tee -a /etc/apt/sources.list
-echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian carp-rk356x main" | sudo tee -a /etc/apt/sources.list
-
-curl https://Embedfire.github.io/keyfile | sudo apt-key add -
 
 #---------------power management --------------
 \${APT_INSTALL} pm-utils triggerhappy
