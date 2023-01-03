@@ -7,6 +7,6 @@ else
     echo -e "\033[36m please input the os type,stretch or buster...... \033[0m"
 fi
 
-echo "VERSION="$RK_ROOTFS_DEBUG "ARCH="$ARCH "./mk-"$RELEASE"-"$RK_ROOTFS_TARGET".sh"
+echo "VERSION="$RK_ROOTFS_DEBUG "ARCH="$ARCH "SOC="$SOC "./mk-"$RELEASE"-"$RK_ROOTFS_TARGET".sh"
 
-VERSION=$RK_ROOTFS_DEBUG ARCH=$ARCH ./mk-$RELEASE-$RK_ROOTFS_TARGET.sh
+VERSION=$RK_ROOTFS_DEBUG ARCH=$ARCH SOC=$SOC ./mk-$RELEASE-$RK_ROOTFS_TARGET.sh

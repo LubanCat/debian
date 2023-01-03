@@ -79,7 +79,8 @@ Building the rk-debian rootfs:
 VERSION=debug ARCH=arm64 ./mk-buster-lite.sh
 
 # 2.b
-VERSION=debug ARCH=arm64 ./mk-buster-desktop.sh
+# SOC参数根据实际情况选择，如rk356x、rk3588
+VERSION=debug ARCH=arm64 SOC=rk356x ./mk-buster-desktop.sh
 ```
 
 Creating the ext4 image(linaro-rootfs.img):
