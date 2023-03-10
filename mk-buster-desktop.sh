@@ -117,7 +117,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #--------------- lubancat --------------
-\${APT_INSTALL} toilet mpv fire-config
+\${APT_INSTALL} toilet mpv
 
 passwd root <<IEOF
 root

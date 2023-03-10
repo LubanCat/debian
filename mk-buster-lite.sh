@@ -79,7 +79,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #--------------- lubancat --------------
-\${APT_INSTALL} toilet fire-config
+\${APT_INSTALL} toilet
 
 passwd root <<IEOF
 root
