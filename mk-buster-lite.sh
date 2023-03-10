@@ -18,7 +18,7 @@ if [ ! $VERSION ]; then
 	VERSION="release"
 fi
 
-if [ ! -e linaro-buster-alip-*.tar.gz ]; then
+if [ ! -e linaro-buster-lite-alip-*.tar.gz ]; then
 	echo -e "\033[36m Run mk-base-debian.sh first \033[0m"
 	exit -1
 fi
@@ -30,7 +30,7 @@ finish() {
 trap finish ERR
 
 echo -e "\033[36m Extract image \033[0m"
-sudo tar -xpf linaro-buster-alip-*.tar.gz
+sudo tar -xpf linaro-buster-lite-alip-*.tar.gz
 
 # packages folder
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
@@ -195,3 +195,5 @@ rm -rf /packages/
 EOF
 
 sudo umount $TARGET_ROOTFS_DIR/dev
+
+IMAGE_VERSION=lite ./mk-image.sh 

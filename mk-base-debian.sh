@@ -20,8 +20,8 @@ if [ ! $TARGET ]; then
 	TARGET='desktop'
 fi
 
-if [ -e linaro-$RELEASE-alip-*.tar.gz ]; then
-	rm linaro-$RELEASE-alip-*.tar.gz
+if [ -e linaro-$RELEASE-$TARGET-alip-*.tar.gz ]; then
+	rm linaro-$RELEASE-$TARGET-alip-*.tar.gz
 fi
 
 sudo rm -rf binary/
@@ -36,9 +36,10 @@ make clean
 
 make
 
+DATE=$(date +%Y%m%d)
 if [ -e linaro-$RELEASE-alip-*.tar.gz ]; then
 	sudo chmod 0666 linaro-$RELEASE-alip-*.tar.gz
-	mv linaro-$RELEASE-alip-*.tar.gz ../../
+	mv linaro-$RELEASE-alip-*.tar.gz ../../linaro-$RELEASE-$TARGET-alip-$DATE.tar.gz
 else
 	echo -e "\e[31m Failed to run livebuild, please check your network connection. \e[0m"
 fi

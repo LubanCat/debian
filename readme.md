@@ -55,8 +55,8 @@ Creating the ext4 image(linaro-rootfs.img):
 
 ## Usage for 64bit Debian 10 (Buster-64)
 
-如果需要构建console版本（控制台版，无桌面），执行1.a、2.a、3。
-如果需要构建desktop版本（带桌面），执行1.b、2.b、3。
+如果需要构建console版本（控制台版，无桌面），执行1.a、2.a。
+如果需要构建desktop版本（带桌面），执行1.b、2.b。
 
 Building a base debian system by ubuntu-build-service from linaro.
 
@@ -70,9 +70,9 @@ RELEASE=buster TARGET=lite ARCH=arm64 ./mk-base-debian.sh
 RELEASE=buster TARGET=desktop ARCH=arm64 ./mk-base-debian.sh
 ```
 
-Building the rk-debian rootfs:
+Building the rk-debian rootfs and creating the ext4 image
 
-添加根文件系统 rk overlay 层
+添加根文件系统 rk overlay 层，并打包ubuntu-rootfs镜像
 
 ```
 # 2.a 
@@ -83,14 +83,6 @@ VERSION=debug ARCH=arm64 ./mk-buster-lite.sh
 VERSION=debug ARCH=arm64 SOC=rk356x ./mk-buster-desktop.sh
 ```
 
-Creating the ext4 image(linaro-rootfs.img):
-
-打包ubuntu-rootfs镜像
-
-```
-# 3 打包镜像
-./mk-image.sh
-```
 ---
 
 ## Cross Compile for ARM Debian
