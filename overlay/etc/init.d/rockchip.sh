@@ -43,25 +43,14 @@ install_packages() {
         rk3568|rk3566)
         MALI=bifrost-g52-g2p0
         ISP=rkaiq_rk3568
-        RGA=rga
+		[ -e /usr/lib/aarch64-linux-gnu/ ] && tar xvf /rknpu2-rk3568-*.tar -C /
         ;;
         rk3588|rk3588s)
         ISP=rkaiq_rk3588
         MALI=valhall-g610-g6p0
-        RGA=rga2
+		[ -e /usr/lib/aarch64-linux-gnu/ ] && tar xvf /rknpu2-rk3588-*.tar -C /
         ;;
     esac
-
-    Files=$(find / -maxdepth 1 -name "libmali-$MALI-x11-dbgsym*.deb")
-    if [ $Files ]; then
-        echo "install libmali-*$MALI*-x11*.deb, wait!"
-        apt install -fy --allow-downgrades /libmali-*$MALI*-x11*.deb
-        apt install -fy --allow-downgrades /camera_engine_$ISP*.deb
-        apt install -fy --allow-downgrades /$RGA/*.deb
-        echo "install libmali-*$MALI*-x11*.deb, successful!"
-    else
-        echo "No libmali-*$MALI*-x11*.deb, skip!"
-    fi
 }
 
 
@@ -98,9 +87,6 @@ else
     CHIPNAME="rk3036"
 fi
 COMPATIBLE=${COMPATIBLE#rockchip,}
-BOARDNAME=${COMPATIBLE%%rockchip,*}
-echo "COMPATIBLE="$COMPATIBLE
-echo "BOARDNAME="$BOARDNAME
 
 /etc/init.d/boot_init.sh
 
@@ -128,42 +114,30 @@ then
 
     install_packages ${CHIPNAME}
 
-    if [ -e "/dev/rfkill" ] ;
-    then
+    if [ -e /usr/bin/gst-launch-1.0 ]; then
+        setcap CAP_SYS_ADMIN+ep /usr/bin/gst-launch-1.0
+
+        # Cannot open pixbuf loader module file
+        if [ -e "/usr/lib/arm-linux-gnueabihf" ] ; then
+            /usr/lib/arm-linux-gnueabihf/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders > /usr/lib/arm-linux-gnueabihf/gdk-pixbuf-2.0/2.10.0/loaders.cache
+            update-mime-database /usr/share/mime/
+        elif [ -e "/usr/lib/aarch64-linux-gnu" ]; then
+            /usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders > /usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
+        fi
+    fi
+
+    if [ -e "/dev/rfkill" ] ; then
        rm /dev/rfkill
     fi
 
-    rm -rf /rga*
     rm -rf /*.deb
+    rm -rf /*.tar
 
-    if [ -e /usr/bin/gst-launch-1.0 ]; then
-        setcap CAP_SYS_ADMIN+ep /usr/bin/gst-launch-1.0 
+    # The base target does not come with lightdm
+    systemctl restart lightdm.service || true
 
-        # Cannot open pixbuf loader module file
-        if [ -e "/usr/lib/arm-linux-gnueabihf" ] ;
-        then
-        /usr/lib/arm-linux-gnueabihf/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders > /usr/lib/arm-linux-gnueabihf/gdk-pixbuf-2.0/2.10.0/loaders.cache
-        update-mime-database /usr/share/mime/
-        elif [ -e "/usr/lib/aarch64-linux-gnu" ];
-        then
-        /usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders > /usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache
-        fi
-
-        rm -rf /packages
-        # The base target does not come with lightdm
-        systemctl restart lightdm.service || true
-    fi
     touch /usr/local/first_boot_flag
 fi
-
-# enable rkwifbt service
-#service rkwifibt start
-
-# enable async service
-#service async start
-
-# enable adbd service
-#service adbd start
 
 # support power management
 if [ -e "/usr/sbin/pm-suspend" -a -e /etc/Powermanager ] ;
@@ -175,8 +149,6 @@ then
         mv /etc/Powermanager/01npu /usr/lib/pm-utils/sleep.d/
         mv /etc/Powermanager/02npu /lib/systemd/system-sleep/
     fi
-    mv /etc/Powermanager/03wifibt /usr/lib/pm-utils/sleep.d/
-    mv /etc/Powermanager/04wifibt /lib/systemd/system-sleep/
     mv /etc/Powermanager/triggerhappy /etc/init.d/triggerhappy
 
     rm /etc/Powermanager -rf
@@ -192,9 +164,3 @@ chown root.video /dev/video-*
 # The chromium using fixed pathes for libv4l2.so
 ln -rsf /usr/lib/*/libv4l2.so /usr/lib/
 [ -e /usr/lib/aarch64-linux-gnu/ ] && ln -Tsf lib /usr/lib64
-
-# read mac-address from efuse
-# if [ "$BOARDNAME" == "rk3288-miniarm" ]; then
-#     MAC=`xxd -s 16 -l 6 -g 1 /sys/bus/nvmem/devices/rockchip-efuse0/nvmem | awk '{print $2$3$4$5$6$7 }'`
-#     ifconfig eth0 hw ether $MAC
-# fi
