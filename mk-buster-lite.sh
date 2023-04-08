@@ -118,7 +118,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
-\${APT_INSTALL} toilet
+\${APT_INSTALL} toilet xinput
 
 passwd root <<IEOF
 root
