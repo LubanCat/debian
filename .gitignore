@@ -2,3 +2,5 @@
 
 *.tar.gz
 *.img
+binary.modified_timestamps
+chroot.files
