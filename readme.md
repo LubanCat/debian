@@ -22,23 +22,24 @@ sudo apt-get install -f
 
 step.1 构建一个基本的 debian 系统。
 
-```
-# 1.a 构建无桌面基础 debian 系统
-RELEASE=buster TARGET=lite ARCH=arm64 ./mk-base-debian.sh
+运行以下脚本，根据提示选择将要构建的debian系统类型
 
-# 1.b 构建带桌面基础 debian 系统
-RELEASE=buster TARGET=desktop ARCH=arm64 ./mk-base-debian.sh
-```
-
-添加根文件系统 rk overlay 层，并打包ubuntu-rootfs镜像
+- lite：无桌面版本，可以通过终端连接板卡
+- xfce：安装了xfce4套件的桌面版
+- xfce-full：安装了xfce4套件+更多推荐软件包
 
 ```
-# 2.a 
-VERSION=debug ARCH=arm64 ./mk-buster-lite.sh
+# 构建基础debain系统
+./mk-base-debian.sh
+```
 
-# 2.b
-# SOC参数根据实际情况选择，如rk356x
-VERSION=debug ARCH=arm64 SOC=rk356x ./mk-buster-desktop.sh
+
+step.2 添加根文件系统 rk overlay 层，并打包ubuntu-rootfs镜像
+
+运行以下脚本，根据提示选择将要构建的debian系统类型
+
+```
+./mk-buster-rootfs.sh
 ```
 
 ---
