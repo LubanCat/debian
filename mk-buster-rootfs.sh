@@ -152,14 +152,16 @@ export APT_INSTALL="apt-get install -fy --allow-downgrades"
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
 \${APT_INSTALL} fire-config
 
+pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple setuptools wheel
+pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple python-periphery Adafruit-Blinka
+
 if [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
-    \${APT_INSTALL} toilet mpv xinput
+    \${APT_INSTALL} toilet mpv gnome-sound-recorder
     #Desktop
     chown -hR cat:cat /home/cat/.config
-    \${APT_INSTALL} numix-gtk-theme numix-icon-theme-circle
     ln -sf /etc/alternatives/lubancat-wallpaper.png /etc/alternatives/desktop-background
 elif [ "$TARGET" == "lite" ]; then
-    \${APT_INSTALL} toilet xinput
+    \${APT_INSTALL} toilet
 fi
 passwd root <<IEOF
 root
@@ -257,29 +259,29 @@ echo -e "\033[47;36m ----- Install rktoolkit ----- \033[0m"
 \${APT_INSTALL} /packages/rktoolkit/*.deb
 
 if [[ "$TARGET" == "xfce-full" ]]; then
-    \${APT_INSTALL} language-pack-zh-hans fonts-noto-cjk-extra gnome-user-docs-zh-hans language-pack-gnome-zh-hans
-
     # set default xinput for fcitx
-    \${APT_INSTALL} fcitx fcitx-table fcitx-googlepinyin fcitx-pinyin fcitx-config-gtk
     sed -i 's/default/fcitx/g' /etc/X11/xinit/xinputrc
 
-    echo -e "\033[47;36m Install Chinese fonts.................... \033[0m"
+    echo -e "\033[47;36m --- Install Chinese fonts --- \033[0m"
     # Uncomment zh_CN.UTF-8 for inclusion in generation
     sed -i 's/^# *\(zh_CN.UTF-8\)/\1/' /etc/locale.gen
     echo "LANG=zh_CN.UTF-8" >> /etc/default/locale
 
     # Generate locale
-    locale-gen zh_CN.UTF-8
+    locale-gen
 
     # Export env vars
-    echo "export LC_ALL=zh_CN.UTF-8" > /etc/profile.d/zh_CN
-    echo "export LANG=zh_CN.UTF-8" >> /etc/profile.d/zh_CN
-    echo "export LANGUAGE=zh_CN.UTF-8" >> /etc/profile.d/zh_CN
+    echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
+    echo "export LANG=zh_CN.UTF-8" >> ~/.bashrc
+    echo "export LANGUAGE=zh_CN.UTF-8" >> ~/.bashrc
 
-    \${APT_INSTALL} ipython3 jupyter scratch
+    source ~/.bashrc
+
+    \${APT_INSTALL} ttf-wqy-zenhei xfonts-intl-chinese
+
+    # HACK debian to fix bug
+    \${APT_INSTALL} fontconfig --reinstall
 fi
-
-pip3 install python-periphery Adafruit-Blinka
 
 \${APT_INSTALL} ttf-wqy-zenhei xfonts-intl-chinese
 
@@ -321,6 +323,7 @@ then
         mv /*.so /usr/lib/aarch64-linux-gnu/dri/
         rm /etc/profile.d/qt.sh
 fi
+rm -rf /home/$(whoami)
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/
 rm -rf /packages
