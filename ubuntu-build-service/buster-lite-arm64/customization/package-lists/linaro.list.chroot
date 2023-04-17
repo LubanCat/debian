@@ -14,6 +14,7 @@ cpufrequtils
 debian-keyring
 file
 gconf2
+gpiod
 initramfs-tools
 initscripts
 input-utils
@@ -23,6 +24,7 @@ kmod
 locales
 lsb-release
 lsof
+libgpiod-dev
 makedev
 mawk
 mutrace
@@ -35,6 +37,9 @@ powerdebug
 powertop
 procps
 psmisc
+python3-pip
+python3-libgpiod
+python-setuptools
 read-edid
 resolvconf
 rsyslog
@@ -65,13 +70,18 @@ usb-modeswitch
 usbutils
 vim
 vim-tiny
+v4l-utils
 wget
+xinput
 zip
 ## bluetooth
 bluez
 ## sound
 alsa-utils
 pulseaudio-module-bluetooth
+sox
+libsox-fmt-all
+ffmpeg
 ## network
 crda
 ethtool

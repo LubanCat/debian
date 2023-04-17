@@ -147,5 +147,27 @@ hardinfo
 gparted
 flameshot
 gedit
+atril
+libreoffice
+orca
+parole
+quodlibet
+system-config-printer
 
+im-config
+fcitx
+fcitx-table
+fcitx-googlepinyin
+fcitx-pinyin
+fcitx-config-gtk
+fcitx-frontend-all
+fcitx-frontend-gtk2
+fcitx-frontend-gtk3
+fcitx-ui-classic
+fcitx-ui-light
+fcitx-module-dbus
+fcitx-module-kimpanel
 
+ipython3
+jupyter
+scratch
