@@ -1,58 +1,60 @@
 #!/bin/bash -e
 ### BEGIN INIT INFO
 # Provides:          rockchip
-# Required-Start:  
-# Required-Stop: 
+# Required-Start:
+# Required-Stop:
 # Default-Start:
 # Default-Stop:
-# Short-Description: 
+# Short-Description:
 # Description:       Setup rockchip platform environment
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 install_packages() {
     case $1 in
         rk3288)
-        MALI=midgard-t76x-r18p0-r0p0
-        ISP=rkisp
-        RGA=rga
-        # 3288w
-        cat /sys/devices/platform/*gpu/gpuinfo | grep -q r1p0 && \
-        MALI=midgard-t76x-r18p0-r1p0
-        ;;
+		MALI=midgard-t76x-r18p0-r0p0
+		ISP=rkisp
+		# 3288w
+		cat /sys/devices/platform/*gpu/gpuinfo | grep -q r1p0 && \
+		MALI=midgard-t76x-r18p0-r1p0
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		;;
         rk3399|rk3399pro)
-        MALI=midgard-t86x-r18p0
-        ISP=rkisp
-        RGA=rga
-        ;;
+		MALI=midgard-t86x-r18p0
+		ISP=rkisp
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		;;
         rk3328)
-        MALI=utgard-450
-        ISP=rkisp
-        RGA=rga
-        ;;
+		MALI=utgard-450
+		ISP=rkisp
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		;;
         rk3326|px30)
-        MALI=bifrost-g31-g2p0
-        ISP=rkisp
-        RGA=rga
-        ;;
+		MALI=bifrost-g31-g2p0
+		ISP=rkisp
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		;;
         rk3128|rk3036)
-        MALI=utgard-400
-        ISP=rkisp
-        RGA=rga
-        ;;
+		MALI=utgard-400
+		ISP=rkisp
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		;;
         rk3568|rk3566)
-        MALI=bifrost-g52-g2p0
-        ISP=rkaiq_rk3568
+		MALI=bifrost-g52-g2p0
+		ISP=rkaiq_rk3568
+		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
+		sed -i "s/glamor/exa/g" /etc/X11/xorg.conf.d/20-modesetting.conf
 		[ -e /usr/lib/aarch64-linux-gnu/ ] && tar xvf /rknpu2-rk3568-*.tar -C /
-        ;;
+		;;
         rk3588|rk3588s)
-        ISP=rkaiq_rk3588
-        MALI=valhall-g610-g6p0
+		ISP=rkaiq_rk3588
+		MALI=valhall-g610-g6p0
 		[ -e /usr/lib/aarch64-linux-gnu/ ] && tar xvf /rknpu2-rk3588-*.tar -C /
-        ;;
+		;;
     esac
 }
-
 
 function update_npu_fw() {
     /usr/bin/npu-image.sh
@@ -136,8 +138,12 @@ then
     # The base target does not come with lightdm
     systemctl restart lightdm.service || true
 
+    systemctl restart rkaiq_3A.service || true
     touch /usr/local/first_boot_flag
 fi
+
+#usb configfs reset
+/usr/bin/usbdevice restart
 
 # support power management
 if [ -e "/usr/sbin/pm-suspend" -a -e /etc/Powermanager ] ;
@@ -164,3 +170,6 @@ chown root.video /dev/video-*
 # The chromium using fixed pathes for libv4l2.so
 ln -rsf /usr/lib/*/libv4l2.so /usr/lib/
 [ -e /usr/lib/aarch64-linux-gnu/ ] && ln -Tsf lib /usr/lib64
+
+# sync system time
+hwclock --systohc
