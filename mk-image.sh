@@ -12,7 +12,7 @@ if [ -e ${ROOTFSIMAGE} ]; then
 	rm ${ROOTFSIMAGE}
 fi
 
-# sudo ./post-build.sh ${TARGET_ROOTFS_DIR}
+sudo ./post-build.sh ${TARGET_ROOTFS_DIR}
 
 dd if=/dev/zero of=${ROOTFSIMAGE} bs=1M count=0 seek=${IMAGE_SIZE_MB}
 
