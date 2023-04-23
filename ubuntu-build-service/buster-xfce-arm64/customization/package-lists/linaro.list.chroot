@@ -126,7 +126,7 @@ xfce4-diskperf-plugin
 xfce4-fsguard-plugin
 #xfce4-mpc-plugin
 xfce4-power-manager
-#xfce4-power-manager-plugins
+xfce4-power-manager-plugins
 xfce4-screenshooter
 xfce4-wavelan-plugin
 mousepad
