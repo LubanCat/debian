@@ -4,3 +4,4 @@
 *.img
 binary.modified_timestamps
 chroot.files
+*.7z
