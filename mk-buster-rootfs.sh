@@ -158,7 +158,7 @@ pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple setuptools wheel
 pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple python-periphery Adafruit-Blinka
 
 if [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
-    \${APT_INSTALL} toilet mpv gnome-sound-recorder
+    \${APT_INSTALL} toilet mpv gnome-sound-recorder fire-config-gui
     #Desktop
     chown -hR cat:cat /home/cat/.config
     ln -sf /etc/alternatives/lubancat-wallpaper.png /etc/alternatives/desktop-background
