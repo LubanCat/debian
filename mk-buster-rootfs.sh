@@ -251,6 +251,11 @@ if [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
     fi
 fi
 
+if [[ "$TARGET" == "xfce-full" ]]; then
+    echo -e "\033[47;36m ------ Install scratch ------- \033[0m"
+    \${APT_INSTALL} /packages/embedfire/scratch_*.deb
+fi
+
 if [ -e "/usr/lib/aarch64-linux-gnu" ] ;
 then
 echo -e "\033[47;36m ------- move rknpu2 --------- \033[0m"
