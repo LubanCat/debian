@@ -81,6 +81,8 @@ if [ ! $VERSION ]; then
     VERSION="release"
 fi
 
+echo -e "\033[47;36m Building for $VERSION \033[0m"
+
 if [ ! -e linaro-buster-$TARGET-alip-*.tar.gz ]; then
     echo "\033[41;36m Run mk-base-debian.sh first \033[0m"
     exit -1
@@ -98,7 +100,7 @@ sudo tar -xpf linaro-buster-"$TARGET"-alip-*.tar.gz
 
 # packages folder
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
-sudo cp -rf packages/$ARCH/* $TARGET_ROOTFS_DIR/packages
+sudo cp -rpf packages/$ARCH/* $TARGET_ROOTFS_DIR/packages
 
 #GPU/RGA/CAMERA packages folder
 install_packages
@@ -108,15 +110,15 @@ sudo cp -rpf packages/$ARCH/camera_engine/camera_engine_$ISP*.deb $TARGET_ROOTFS
 sudo cp -rpf packages/$ARCH/$RGA/*.deb $TARGET_ROOTFS_DIR/packages/install_packages
 
 # overlay folder
-sudo cp -rf overlay/* $TARGET_ROOTFS_DIR/
+sudo cp -rpf overlay/* $TARGET_ROOTFS_DIR/
 
 # overlay-firmware folder
-sudo cp -rf overlay-firmware/* $TARGET_ROOTFS_DIR/
+sudo cp -rpf overlay-firmware/* $TARGET_ROOTFS_DIR/
 
 # overlay-debug folder
 # adb, video, camera  test file
 if [ "$VERSION" == "debug" ]; then
-    sudo cp -rf overlay-debug/* $TARGET_ROOTFS_DIR/
+    sudo cp -rpf overlay-debug/* $TARGET_ROOTFS_DIR/
 fi
 ## hack the serial
 sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/lib/systemd/system/serial-getty@.service
@@ -139,8 +141,11 @@ sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
 
 if [ $MIRROR ]; then
-    echo "deb [arch=arm64] https://cloud.embedfire.com/mirrors/ebf-debian $MIRROR main" | sudo tee -a /etc/apt/sources.list
-    curl https://Embedfire.github.io/keyfile | sudo apt-key add -
+	mkdir -p /etc/apt/keyrings
+	curl -fsSL https://Embedfire.github.io/keyfile | gpg --dearmor -o /etc/apt/keyrings/embedfire.gpg
+	chmod a+r /etc/apt/keyrings/embedfire.gpg
+	echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/embedfire.gpg] https://cloud.embedfire.com/mirrors/ebf-debian carp-lbc main" | tee /etc/apt/sources.list.d/embedfire-lbc.list > /dev/null
+	echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/embedfire.gpg] https://cloud.embedfire.com/mirrors/ebf-debian $MIRROR main" | tee /etc/apt/sources.list.d/embedfire-$MIRROR.list > /dev/null
 fi
 
 apt-get update
@@ -152,7 +157,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
-\${APT_INSTALL} fire-config u-boot-tools
+\${APT_INSTALL} fire-config u-boot-tools edid-decode
 
 pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple setuptools wheel
 pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple python-periphery Adafruit-Blinka
@@ -330,10 +335,12 @@ then
         mv /*.so /usr/lib/aarch64-linux-gnu/dri/
         rm /etc/profile.d/qt.sh
 fi
+
 rm -rf /home/$(whoami)
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/
-rm -rf /packages
+rm -rf /packages/
+rm -rf /sha256sum*
 
 EOF
 
