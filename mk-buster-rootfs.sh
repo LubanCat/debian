@@ -138,7 +138,17 @@ elif [ "$ARCH" == "arm64"  ]; then
 fi
 sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
+ID=$(stat --format %u $TARGET_ROOTFS_DIR)
+
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
+
+# Fixup owners
+if [ "$ID" -ne 0 ]; then
+    find / -user $ID -exec chown -h 0:0 {} \;
+fi
+for u in \$(ls /home/); do
+    chown -h -R \$u:\$u /home/\$u
+done
 
 if [ $MIRROR ]; then
 	mkdir -p /etc/apt/keyrings
