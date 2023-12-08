@@ -204,22 +204,33 @@ if [ ! -e "/boot/boot_init" ] ; then
                 esac
             done
 
-            mount "$Boot_Part" /boot
-            echo "$Boot_Part  /boot  auto  defaults  0 2" >> /etc/fstab
+            if [ -z $(cat /etc/fstab | grep /boot ) ] ; then 
+                mount "$Boot_Part" /boot
+                echo "$Boot_Part  /boot  auto  defaults  0 2" >> /etc/fstab
+                sync
+            fi
+
+            service lightdm stop || echo "skip error"
+            sync
+
+            if [ -d "/boot/kerneldeb/" ] ; then 
+                apt install -fy --allow-downgrades /boot/kerneldeb/* || true
+                apt-mark hold linux-headers-$(uname -r) linux-image-$(uname -r) || true
+                rm -rf /boot/kerneldeb/
+                sync
+            fi
+
+            cp -f /boot/logo_kernel.bmp /boot/logo.bmp
+            ln -sf $BOARD_uEnv /boot/uEnv/uEnv.txt
+            sync
+
+            ln -sf dtb/$BOARD_DTB /boot/rk-kernel.dtb
+            sync
+            
+            touch /boot/boot_init
+            sync
+            reboot
         fi
-
-        service lightdm stop || echo "skip error"
-
-        apt install -fy --allow-downgrades /boot/kerneldeb/* || true
-        apt-mark hold linux-headers-$(uname -r) linux-image-$(uname -r) || true
-
-        ln -sf dtb/$BOARD_DTB /boot/rk-kernel.dtb
-        ln -sf $BOARD_uEnv /boot/uEnv/uEnv.txt
-
-        touch /boot/boot_init
-        rm -f /boot/kerneldeb/*
-        cp -f /boot/logo_kernel.bmp /boot/logo.bmp
-        reboot
     else
         echo "PARTLABEL=oem  /oem  ext2  defaults  0 2" >> /etc/fstab
         echo "PARTLABEL=userdata  /userdata  ext2  defaults  0 2" >> /etc/fstab
