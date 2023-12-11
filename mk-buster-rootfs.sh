@@ -109,6 +109,8 @@ sudo cp -rpf packages/$ARCH/libmali/libmali-*$MALI*-x11*.deb $TARGET_ROOTFS_DIR/
 sudo cp -rpf packages/$ARCH/camera_engine/camera_engine_$ISP*.deb $TARGET_ROOTFS_DIR/packages/install_packages
 sudo cp -rpf packages/$ARCH/$RGA/*.deb $TARGET_ROOTFS_DIR/packages/install_packages
 
+sudo cp -rpf ../kernel/extboot/kerneldeb $TARGET_ROOTFS_DIR/boot/
+
 # overlay folder
 sudo cp -rpf overlay/* $TARGET_ROOTFS_DIR/
 
@@ -198,6 +200,9 @@ ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 sed -i '/pam_securetty.so/s/^/# /g' /etc/pam.d/login
 
 apt install -fy --allow-downgrades /packages/install_packages/*.deb
+
+apt install -fy --allow-downgrades /boot/kerneldeb/* || true
+rm -rf /boot/*
 
 echo -e "\033[47;36m ----- power management ----- \033[0m"
     \${APT_INSTALL} pm-utils triggerhappy
