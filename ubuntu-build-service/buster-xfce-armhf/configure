@@ -11,11 +11,11 @@ set -e
 echo "I: create configuration"
 export LB_BOOTSTRAP_INCLUDE="apt-transport-https gnupg"
 lb config \
- --mirror-bootstrap "http://mirrors.ustc.edu.cn/debian" \
- --mirror-chroot "http://mirrors.ustc.edu.cn/debian" \
- --mirror-chroot-security "http://mirrors.ustc.edu.cn/debian-security" \
- --mirror-binary "http://mirrors.ustc.edu.cn/debian" \
- --mirror-binary-security "http://mirrors.ustc.edu.cn/debian-security" \
+ --mirror-bootstrap "https://mirrors.aliyun.com/debian-archive/debian" \
+ --mirror-chroot "https://mirrors.aliyun.com/debian-archive/debian" \
+ --mirror-chroot-security "https://mirrors.aliyun.com/debian-archive/debian-security" \
+ --mirror-binary "https://mirrors.aliyun.com/debian-archive/debian" \
+ --mirror-binary-security "https://mirrors.aliyun.com/debian-archive/debian-security" \
  --apt-indices false \
  --apt-recommends false \
  --apt-secure false \
