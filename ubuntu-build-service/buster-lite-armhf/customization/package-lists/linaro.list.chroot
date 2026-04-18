@@ -26,6 +26,7 @@ dbus-x11
 debconf
 debconf-i18n
 debian-keyring
+dosfstools
 #default-jre
 dmz-cursor-theme
 dnsmasq-base
