@@ -177,7 +177,7 @@ export DEBIAN_FRONTEND=noninteractive
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
-\${APT_INSTALL} fire-config u-boot-tools edid-decode logrotate
+\${APT_INSTALL} fire-config u-boot-tools edid-decode logrotate usbmount
 
 # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple setuptools wheel
 # pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple python-periphery Adafruit-Blinka
