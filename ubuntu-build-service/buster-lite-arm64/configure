@@ -25,6 +25,7 @@ lb config \
  --binary-filesystem ext4 \
  --binary-images tar \
  --bootappend-live "hostname=lubancat username=cat" \
+ --bootloader "syslinux" \
  --bootstrap-qemu-arch arm64 \
  --bootstrap-qemu-static /usr/bin/qemu-aarch64-static \
  --cache false \
@@ -32,6 +33,8 @@ lb config \
  --compression gzip \
  --debootstrap-options "--variant=minbase --include=apt-transport-https,gnupg" \
  --distribution buster \
+ --firmware-binary false \
+ --firmware-chroot false \
  --gzip-options '-9 --rsyncable' \
  --iso-publisher 'Linaro; http://www.embedfire.com/; linaro-dev@lists.linaro.org' \
  --iso-volume 'Linaro Buster $(date +%Y%m%d-%H:%M)' \
