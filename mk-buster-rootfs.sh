@@ -159,6 +159,8 @@ for u in \$(ls /home/); do
     chown -h -R \$u:\$u /home/\$u
 done
 
+ln -sf /run/resolvconf/resolv.conf /etc/resolv.conf
+
 if [ $MIRROR ]; then
 	mkdir -p /etc/apt/keyrings
 	curl -fsSL https://Embedfire.github.io/keyfile | gpg --dearmor -o /etc/apt/keyrings/embedfire.gpg
